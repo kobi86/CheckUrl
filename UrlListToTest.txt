@@ -1,0 +1,16 @@
+
+Search Sites:
+    - https://www.google.com
+    - https://www.google.com/badpage
+    - https://www.yahoo.com/
+social Networking: 
+    - http://www.facebook.com 
+    - https://www.privatesocaialnetwork.com
+    - http://www.twitter.com
+Code:
+    - http://www.github.com 
+General:
+    - https://www.mynotexistingdomain.com/
+
+
+

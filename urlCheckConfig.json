@@ -1,0 +1,6 @@
+{
+    "httpslist": "UrlListToTest.txt",
+    "outputfile": "FromUrlFile.txt",
+    "search": "http",
+    "errorCodes": ["404", "no such host"]
+}
