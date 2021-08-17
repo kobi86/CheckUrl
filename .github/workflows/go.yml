@@ -1,4 +1,4 @@
-name: Go
+name: CheckURL Tool CI
 
 on:
   push:
@@ -32,12 +32,10 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
-      # Artifact name
         name: CheckURL-Linux 
-      # A file, directory or wildcard pattern that describes what to upload
         path: ForUpload
         retention-days: 7
-      # The desired behavior if no files are found using the provided path.
+        
   osx:
     runs-on: macos-latest
     steps:
@@ -62,11 +60,9 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
-      # Artifact name
         name: CheckURL-OSX 
-      # A file, directory or wildcard pattern that describes what to upload
         path: ForUpload
         retention-days: 7
-      # The desired behavior if no files are found using the provided path.
+
    
       
