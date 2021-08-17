@@ -17,7 +17,11 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16
-
+        
+    - name: location
+      shell: bash
+      run: ls 
+    
     - name: Build for Linux
       run: go build -o CheckURL-Linux
     
