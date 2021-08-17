@@ -17,13 +17,12 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16
-        
-    - name: location
-      shell: bash
-      run: ls 
-    
+
     - name: Build for Linux
-      run: go build -o CheckURL-Linux
+      shell: bash
+      run: | 
+       go mod init
+       go build -o CheckURL-Linux
     
     - name: Wrap files for upload
       shell: bash 
