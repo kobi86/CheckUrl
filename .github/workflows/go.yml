@@ -35,11 +35,7 @@ jobs:
         name: CheckURL-Linux 
         path: ForUpload
         retention-days: 7
-        
-    - name: Publish Release
-      uses: eregon/publish-release@v1.0.3
-      with:
-        release_id: ${{ github.run_id }}
+      
         
   osx:
     runs-on: macos-latest
