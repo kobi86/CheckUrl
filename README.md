@@ -1,5 +1,5 @@
 [![CheckURL Tool CI](https://github.com/kobi86/CheckUrl/actions/workflows/go.yml/badge.svg)](https://github.com/kobi86/CheckUrl/actions/workflows/go.yml)
-
+[![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](http://golang.org)
 # Check URL
 
 This tool scans a file with URL's, exports them into a seprate file and then checks if the url's exists. 
