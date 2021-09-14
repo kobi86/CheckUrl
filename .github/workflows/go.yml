@@ -7,37 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-
-  # linux:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-
-  #   - name: Set up Go
-  #     uses: actions/setup-go@v2.1.3
-  #     with:
-  #       go-version: 1.16
-      
-  #   - name: Build for Linux
-  #     run: |
-  #      export GO111MODULE=auto
-  #      go build -o CheckURL-Linux
-    
-  #   - name: Wrap files for upload
-  #     shell: bash 
-  #     run: | 
-  #      mkdir ForUpload
-  #      cp CheckURL-Linux urlCheckConfig.json UrlListToTest.txt ForUpload/
-    
-  #   - name: Upload a Build Artifact
-  #     uses: actions/upload-artifact@v2.2.4
-  #     with:
-  #       name: CheckURL-Linux 
-  #       path: ForUpload
-  #       retention-days: 7
-      
-        
-  osx:
+  CheckURL_Tool:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -50,43 +20,65 @@ jobs:
     - name: Build for OSX
       shell: bash
       run: |
-       mkdir ForUpload
        export GO111MODULE=auto
-       go build -o ForUpload/CheckURL.osx
+       go build -o OSX/CheckURL-osx
+       chmod +x OSX/CheckURL-osx
 
     - name: Build for Linux
       shell: bash
       run: | 
-       GOOS=linux GOARCH=386 CGO_ENABLED=0 go build -o ForUpload/CheckURL.linux
-    
-    - name: Wrap files for upload
-      shell: bash 
-      run: | 
-       cp urlCheckConfig.json UrlListToTest.txt ForUpload/
+       export GO111MODULE=auto
+       GOOS=linux GOARCH=386 CGO_ENABLED=0 go build -o LINUX/CheckURL-linux
+       chmod +x LINUX/CheckURL-linux
 
-    - name: Make tar balls
-      shell: bash
-      run: | 
-        cd ForUpload
-        tar -czvf urlCheckConfig.json UrlListToTest.txt CheckURL.osx
-        tar -czvf urlCheckConfig.json UrlListToTest.txt CheckURL.linux
+    - name: Tar ball for OSX
+      run: |
+        cp urlCheckConfig.json UrlListToTest.txt OSX/ 
+        cp urlCheckConfig.json UrlListToTest.txt LINUX/ 
+        tar -czvf CheckURL-osx.tar.gz CheckURL_osx/
+        tar -czvf CheckURL-linux.tar.gz CheckURL_linux/
 
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.2.4
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
       with:
-        name: CheckURL.osx 
-        path: |
-          ForUpload/urlCheckConfig.json
-          ForUpload/UrlListToTest.txt
-          ForUpload/CheckURL.osx
-        retention-days: 7
+       name: CheckURL-osx.tar.gz
+       path: CheckURL_osx.tar.gz    
+       retention-days: 7
 
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.2.4
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
       with:
-        name: CheckURL.Linux 
-        path: |
-          ForUpload/urlCheckConfig.json
-          ForUpload/UrlListToTest.txt
-          ForUpload/CheckURL.linux
-        retention-days: 7
+       name: CheckURL-linux.tar.gz
+       path: CheckURL_linux.tar.gz   
+       retention-days: 7
+
+    - name: Create release draft
+      id: create_release_draft
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        tag_name: ${{github.ref}}
+        release_name: ${{github.ref}}
+        draft: true
+        prerelease: false
+
+    - name: Upload Linux
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        upload_url: ${{steps.create_release_draft.outputs.upload_url}}
+        asset_path: ./CheckURL_linux.tar.gz #${{env.GIT_TAG}}.linux-amd64.tar.gz
+        asset_name: CheckURL${{env.GIT_TAG}}.linux-amd64.tar.gz
+        asset_content_type: application/gzip; charset=binary
+
+    - name: Upload OSX
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        upload_url: ${{steps.create_release_draft.outputs.upload_url}}
+        asset_path: ./CheckURL_osx.tar.gz #${{env.GIT_TAG}}.linux-amd64.tar.gz
+        asset_name: CheckURL${{env.GIT_TAG}}.darwin-amd64.tar.gz
+        asset_content_type: application/gzip; charset=binary

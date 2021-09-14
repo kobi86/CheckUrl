@@ -62,6 +62,7 @@ func RunUrlTest(URIList string, errorCodes []string) {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	data, err := os.Open(URIList)
 	if err != nil {
+		fmt.Print("URL file list cant be found")
 		panic(err)
 	}
 	scanner := bufio.NewScanner(data)
@@ -105,6 +106,7 @@ func UpdateOutputFile(lineToAdd string, outputfile string) {
 func ListAllURIs(URIList string, search string, outputfile string) {
 	data, err := os.Open(URIList)
 	if err != nil {
+		fmt.Print("Cant find config json file")
 		panic(err)
 	}
 	scanner := bufio.NewScanner(data)
